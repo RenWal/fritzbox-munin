@@ -26,17 +26,17 @@ import json
 from lxml import html
 from FritzboxInterface import FritzboxInterface
 
-PAGE = 'internet/dsl_stats_tab.lua'
-PARAMS = {'update':'mainDiv', 'useajax':1, 'xhr':1}
+PAGE   = 'data.lua'
+PARAMS = {'page': 'dslStat', 'lang': 'en', 'useajax': 1, 'xhrId': 'all', 'xhr': 1, 'no_sidrenew' : None}
 
 TITLES = {
   'capacity': 'Link Capacity',
-  'rate': 'Synced Rate',
-  'snr': 'Signal-to-Noise Ratio',
-  'damping': 'Line Loss',
-  'errors': 'Transmission Errors',
-  'crc': 'Checksum Errors',
-  'ecc': 'Error Correction'
+  'rate'    : 'Synced Rate',
+  'snr'     : 'Signal-to-Noise Ratio',
+  'damping' : 'Line Loss',
+  'errors'  : 'Errors: Transmission',
+  'crc'     : 'Errors: Checksums',
+  'ecc'     : 'Errors: Corrected'
 }
 TYPES = {
   'capacity': 'GAUGE',
@@ -63,8 +63,8 @@ def get_modes():
 def print_graph(name, recv, send, prefix=""):
   if name:
     print("multigraph " + name)
-  print(prefix + "recv.value " + recv)
-  print(prefix + "send.value " + send)
+  print(prefix + f"recv.value {recv}")
+  print(prefix + f"send.value {send}")
 
 def print_dsl_stats():
   """print the current DSL statistics"""
@@ -72,66 +72,55 @@ def print_dsl_stats():
   modes = get_modes()
 
   # download the table
-  data = FritzboxInterface().getPageWithLogin(PAGE, data=PARAMS)
-  root = html.fragments_fromstring(data)
+  data = FritzboxInterface().postPageWithLogin(PAGE, data=PARAMS)
+
+  dslStats = data["data"]["negotiatedValues"]
+  errStats = data["data"]["errorCounters"]
 
   if 'capacity' in modes:
-    capacity_recv = root[1].xpath('tr[position() = 4]/td[position() = 3]')[0].text
-    capacity_send = root[1].xpath('tr[position() = 4]/td[position() = 4]')[0].text
+    capacity_recv = float(dslStats[2]["val"][0]["ds"])
+    capacity_send = float(dslStats[2]["val"][0]["us"])
     print_graph("dsl_capacity", capacity_recv, capacity_send)
 
   if 'rate' in modes:
-    rate_recv = root[1].xpath('tr[position() = 5]/td[position() = 3]')[0].text
-    rate_send = root[1].xpath('tr[position() = 5]/td[position() = 4]')[0].text
+    rate_recv = float(dslStats[3]["val"][0]["ds"])
+    rate_send = float(dslStats[3]["val"][0]["us"])
     print_graph("dsl_rate", rate_recv, rate_send)
 
   if 'snr' in modes: # Störabstandsmarge
-    snr_recv = root[1].xpath('tr[position() = 13]/td[position() = 3]')[0].text
-    snr_send = root[1].xpath('tr[position() = 13]/td[position() = 4]')[0].text
+    snr_recv = float(dslStats[12]["val"][0]["ds"])
+    snr_send = float(dslStats[12]["val"][0]["us"])
     print_graph("dsl_snr", snr_recv, snr_send)
 
   if 'damping' in modes: # Leitungsdämpfung
-    damping_recv = root[1].xpath('tr[position() = 15]/td[position() = 3]')[0].text
-    damping_send = root[1].xpath('tr[position() = 15]/td[position() = 4]')[0].text
+    damping_recv = float(dslStats[13]["val"][0]["ds"])
+    damping_send = float(dslStats[13]["val"][0]["us"])
     print_graph("dsl_damping", damping_recv, damping_send)
 
   if 'errors' in modes:
-    es_recv = root[4].xpath('tr[position() = 3]/td[position() = 2]')[0].text
-    es_send = root[4].xpath('tr[position() = 3]/td[position() = 3]')[0].text
-    ses_recv = root[4].xpath('tr[position() = 4]/td[position() = 2]')[0].text
-    ses_send = root[4].xpath('tr[position() = 4]/td[position() = 3]')[0].text
-    print_graph("dsl_errors", es_recv, es_send, prefix="es_")
-    print_graph(None, ses_recv, ses_send, prefix="ses_")
+    es_recv  = float(errStats[1]["val"][0]["ds"])
+    es_send  = float(errStats[1]["val"][0]["us"])
+    ses_recv = float(errStats[2]["val"][0]["ds"])
+    ses_send = float(errStats[2]["val"][0]["us"])
+    print_graph("dsl_errors", int(es_recv),  int(es_send),  prefix="es_")
+    print_graph(None,         int(ses_recv), int(ses_send), prefix="ses_")
 
   if 'crc' in modes:
-    crc_recv = root[4].xpath('tr[position() = 7]/td[position() = 2]')[0].text
-    crc_send = root[4].xpath('tr[position() = 7]/td[position() = 3]')[0].text
+    crc_recv = float(errStats[6]["val"][0]["ds"])
+    crc_send = float(errStats[6]["val"][0]["us"])
     print_graph("dsl_crc", crc_recv, crc_send)
 
   if 'ecc' in modes:
-    corr_recv = root[4].xpath('tr[position() = 11]/td[position() = 2]')[0].text
-    corr_send = root[4].xpath('tr[position() = 11]/td[position() = 3]')[0].text
-    fail_recv = root[4].xpath('tr[position() = 15]/td[position() = 2]')[0].text
-    fail_send = root[4].xpath('tr[position() = 15]/td[position() = 3]')[0].text
+    corr_recv = float(errStats[10]["val"][0]["ds"])
+    corr_send = float(errStats[10]["val"][0]["us"])
+    fail_recv = float(errStats[14]["val"][0]["ds"])
+    fail_send = float(errStats[14]["val"][0]["us"])
     print_graph("dsl_ecc", corr_recv, corr_send, prefix="corr_")
-    print_graph(None, fail_recv, fail_send, prefix="fail_")
+    print_graph(None,      fail_recv, fail_send, prefix="fail_")
 
-def retrieve_max_values():
-  max = {}
-  page = 'internet/inetstat_monitor.lua'
-  params = {'useajax':1, 'action':'get_graphic', 'xhr':1, 'myXhr':1}
-  data = FritzboxInterface().getPageWithLogin(page, data=params)
-
-  # Retrieve max values
-  jsondata = json.loads(data)[0]
-  max['send'] = int(float(jsondata['upstream']))
-  max['recv'] = int(float(jsondata['downstream']))
-
-  return max
 
 def print_config():
   modes = get_modes()
-  max = retrieve_max_values()
 
   for mode in ['capacity', 'rate', 'snr', 'damping', 'crc']:
     if not mode in modes:
@@ -148,7 +137,6 @@ def print_config():
       print(p + ".min 0")
       if mode in ['capacity', 'rate']:
         print(p + ".cdef " + p + ",1000,*")
-        print(p + ".warning " + str(max[p]))
 
   if 'errors' in modes:
     print("multigraph dsl_errors")
@@ -161,7 +149,7 @@ def print_config():
       print(p + ".label " + l)
       print(p + ".type " + TYPES['errors'])
       print(p + ".graph LINE1")
-      print(p + ".min 0")
+      print(p + ".min -1")
       print(p + ".warning 1")
 
   if 'ecc' in modes:
