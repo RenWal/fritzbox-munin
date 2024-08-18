@@ -89,6 +89,7 @@ import json
 
 key_ghz24 = "ghz24"
 key_ghz5  = "ghz5"
+key_ghz6  = "ghz6"
 key_eth   = "eth"
 
 
@@ -108,6 +109,9 @@ knownBands = { key_ghz24: makeKnownBandDescriptor(id           = key_ghz24,
                                                   is_symmetric = 0),
                key_ghz5:  makeKnownBandDescriptor(id           = key_ghz5,
                                                   descr        = "Wifi 5 GHz",
+                                                  is_symmetric = 0),
+               key_ghz6:  makeKnownBandDescriptor(id           = key_ghz6,
+                                                  descr        = "Wifi 6 GHz",
                                                   is_symmetric = 0),
                key_eth:   makeKnownBandDescriptor(id           = key_eth,
                                                   descr        = "Ethernet",
@@ -296,6 +300,7 @@ def getWifiSpeeds(oneFritzBoxInterface,
 
   wifi24GHzRegex   = re.compile(r'\b2[,\.]4\s*GHz\b', re.IGNORECASE)
   wifi5GHzRegex    = re.compile(r'\b5\s*GHz\b',       re.IGNORECASE)
+  wifi6GHzRegex    = re.compile(r'\b6\s*GHz\b',       re.IGNORECASE)
 
   for dev in all_devices:
 
@@ -363,6 +368,8 @@ def getWifiSpeeds(oneFritzBoxInterface,
             band_key = key_ghz24
           elif (wifi5GHzRegex.search(propString)):
             band_key = key_ghz5
+          elif (wifi6GHzRegex.search(propString)):
+            band_key = key_ghz6
           else:
             band_key = None
           # end if band key selection

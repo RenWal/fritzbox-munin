@@ -23,6 +23,7 @@
 
 import os
 import sys
+import pprint
 from FritzboxInterface import FritzboxInterface
 
 PAGE = 'data.lua'
@@ -47,7 +48,7 @@ def get_freqs():
 def get_modes():
   return os.getenv('wifi_modes').split(' ')
 
-def print_wifi_load():
+def print_wifi_load(debug = False):
   """get the current wifi bandwidth usage"""
 
   # set up the graphs (load the 10-minute view)
@@ -55,6 +56,11 @@ def print_wifi_load():
   # download the graphs
   jsondata = fritzboxHelper.postPageWithLogin(PAGE, data=PARAMS)['data']
 
+  if debug:
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(jsondata)
+  # end if
+  
   freqs = get_freqs()
   modes = get_modes()
   scanlist = jsondata['scanlist']
@@ -120,12 +126,18 @@ def print_config():
         print(multiP + '.draw AREASTACK')
 
 if __name__ == "__main__":
-  if len(sys.argv) == 2 and sys.argv[1] == 'config':
+  if (len(sys.argv) == 1):
+    request = "fetch"
+  else:
+    request = sys.argv[1]
+  # end if
+  
+  if (request == "config"):
     print_config()
-  elif len(sys.argv) == 2 and sys.argv[1] == 'autoconf':
+  elif (request == 'autoconf'):
     print("yes")  # Some docs say it'll be called with fetch, some say no arg at all
-  elif len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] == 'fetch'):
+  elif (request == 'fetch' or request == 'debug'):
     try:
-      print_wifi_load()
+      print_wifi_load(request == 'debug')
     except Exception as e:
       sys.exit("Couldn't retrieve fritzbox wifi load: " + str(e))
