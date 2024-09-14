@@ -24,6 +24,7 @@
 import os
 import re
 import sys
+import json
 from FritzboxInterface import FritzboxInterface
 
 PAGE = 'data.lua'
@@ -69,7 +70,11 @@ def print_energy_stats():
   type = get_type()
 
   # download the graphs
-  jsondata = FritzboxInterface().postPageWithLogin(PAGE, data=PARAMS)['data']['drain']
+  jsondata = FritzboxInterface().postPageWithLogin(PAGE, data=PARAMS)
+  
+  # print(json.dumps(jsondata, indent = 4))
+  
+  jsondata = jsondata['data']['drain']
   devices = get_devices_for(type)
 
   if 'power' in modes:

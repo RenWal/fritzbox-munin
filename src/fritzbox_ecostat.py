@@ -22,6 +22,7 @@
 
 import os
 import sys
+import json
 from FritzboxInterface import FritzboxInterface
 
 PAGE = 'data.lua'
@@ -56,6 +57,8 @@ def print_system_stats():
 
   # download the graphs
   jsondata = FritzboxInterface().postPageWithLogin(PAGE, data=PARAMS)['data']
+  
+  # print(json.dumps(jsondata, indent = 4))
 
   if 'cpu' in modes:
     cpuload_data = jsondata['cpuutil']
