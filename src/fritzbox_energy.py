@@ -42,8 +42,8 @@ INFO = {
 
 # date-from-text extractor foo
 locale = os.getenv('locale', 'de')
-patternLoc = {"de": "(\d+)\s(Tag|Stunden|Minuten)",
-              "en": "(\d+)\s(days|hours|minutes)"}
+patternLoc = {"de": r"(\d+)\s(Tag|Stunden|Minuten)",
+              "en": r"(\d+)\s(days|hours|minutes)"}
 dayLoc = {"de": "Tag", "en": "days"}
 hourLoc = {"de": "Stunden", "en": "hours"}
 minutesLoc = {"de": "Minuten", "en": "minutes"}
