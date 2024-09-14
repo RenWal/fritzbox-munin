@@ -477,7 +477,7 @@ def printConfig(devicesByBands, debug = False):
       print(f"multigraph {graphName}{rxtxCfg['rx_suffix']}")
       print(f"graph_title Device Speeds ({rxtxCfg['rx_prefix']}{bandDescr})")
       print("graph_vlabel MBit/s")
-      print("graph_args --logarithmic")
+      # print("graph_args --logarithmic")
       print("graph_category network")
       
       print("graph_order " + " ".join(dsNames))
@@ -496,7 +496,7 @@ def printConfig(devicesByBands, debug = False):
       print(f"multigraph {graphName}{rxtxCfg['tx_suffix']}")
       print(f"graph_title Device Speeds ({rxtxCfg['tx_prefix']}{bandDescr})")
       print("graph_vlabel MBit/s")
-      print("graph_args --logarithmic")
+      # print("graph_args --logarithmic")
       print("graph_category network")
 
       print("graph_order " + " ".join(dsNames))
