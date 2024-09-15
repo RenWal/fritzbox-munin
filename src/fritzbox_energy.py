@@ -24,6 +24,7 @@
 import os
 import re
 import sys
+import json
 from FritzboxInterface import FritzboxInterface
 
 PAGE = 'data.lua'
@@ -42,8 +43,8 @@ INFO = {
 
 # date-from-text extractor foo
 locale = os.getenv('locale', 'de')
-patternLoc = {"de": "(\d+)\s(Tag|Stunden|Minuten)",
-              "en": "(\d+)\s(days|hours|minutes)"}
+patternLoc = {"de": r"(\d+)\s(Tag|Stunden|Minuten)",
+              "en": r"(\d+)\s(days|hours|minutes)"}
 dayLoc = {"de": "Tag", "en": "days"}
 hourLoc = {"de": "Stunden", "en": "hours"}
 minutesLoc = {"de": "Minuten", "en": "minutes"}
@@ -69,7 +70,11 @@ def print_energy_stats():
   type = get_type()
 
   # download the graphs
-  jsondata = FritzboxInterface().postPageWithLogin(PAGE, data=PARAMS)['data']['drain']
+  jsondata = FritzboxInterface().postPageWithLogin(PAGE, data=PARAMS)
+  
+  # print(json.dumps(jsondata, indent = 4))
+  
+  jsondata = jsondata['data']['drain']
   devices = get_devices_for(type)
 
   if 'power' in modes:

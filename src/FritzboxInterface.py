@@ -42,8 +42,15 @@ class FritzboxInterface:
   __baseUri = ""
 
   # default constructor
-  def __init__(self):
-    self.config = FritzboxConfig()
+  def __init__(self,
+               config = None
+               ):
+    if config is None:
+      self.config = FritzboxConfig()
+    else:
+      self.config = config
+    # endif
+    
     self.__session = FritzboxFileSession(self.config.server, self.config.user, self.config.port)
     self.__baseUri = self.__getBaseUri()
 

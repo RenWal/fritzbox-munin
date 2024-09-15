@@ -34,7 +34,7 @@ class FritzboxConnectionUptime:
       sys.exit("Couldn't get connection uptime: " + str(e))
 
   def printUptime(self):
-    print('uptime.value %.2f' % (int(self.__connection.uptime) / 3600.0))
+    print('connUptime.value %.2f' % (int(self.__connection.uptime) / 3600.0))
 
   def printConfig(self):
     print("graph_title Connection Uptime")
@@ -42,8 +42,9 @@ class FritzboxConnectionUptime:
     print("graph_vlabel uptime in hours")
     print("graph_scale no")
     print("graph_category network")
-    print("uptime.label uptime")
-    print("uptime.draw AREA")
+    print("connUptime.label uptime")
+    print("connUptime.type  GAUGE")
+    print("connUptime.draw AREA")
     print("graph_info The uptime in hours after the last disconnect.<br />Public IP address (ipv4): " + self.__connection.external_ip + ", Public IP address (ipv6): " + self.__connection.external_ipv6)
 
 if __name__ == "__main__":

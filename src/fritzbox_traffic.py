@@ -35,13 +35,13 @@ class FritzboxTraffic:
 
   def printTraffic(self):
     transmission_rate = self.__connection.transmission_rate
-    print('down.value %d' % transmission_rate[1])
-    print('up.value %d' % transmission_rate[0])
+    print(f'down.value {transmission_rate[1]:d}')
+    print(f'up.value {transmission_rate[0]:d}')
 
     if not os.environ.get('traffic_remove_max') or "false" in os.environ.get('traffic_remove_max'):
       max_traffic = self.__connection.max_bit_rate
-      print('maxdown.value %d' % max_traffic[1])
-      print('maxup.value %d' % max_traffic[0])
+      print(f'maxdown.value {max_traffic[1]:d}')
+      print(f'maxup.value {max_traffic[0]:d}')
 
   def printConfig(self):
     max_traffic = self.__connection.max_bit_rate
@@ -56,13 +56,13 @@ class FritzboxTraffic:
     print("down.graph no")
     print("down.cdef down,8,*")
     print("down.min 0")
-    print(f"down.max %d{max_traffic[1]}")
+    print(f"down.max {max_traffic[1]:d}")
     print("up.label bps")
     print("up.type DERIVE")
     print("up.draw LINE")
     print("up.cdef up,8,*")
     print("up.min 0")
-    print(f"up.max %d{max_traffic[0]}")
+    print(f"up.max {max_traffic[0]:d}")
     print("up.negative down")
     print("up.info Traffic of the WAN interface.")
     if not os.environ.get('traffic_remove_max') or "false" in os.environ.get('traffic_remove_max'):
