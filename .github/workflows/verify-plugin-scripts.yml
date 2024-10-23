@@ -1,0 +1,35 @@
+name: Verify Plugin Scripts
+
+on: [push,workflow_dispatch,pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.9", "3.10", "3.11", "3.12" ]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.dev.txt
+        pip install -r requirements.txt
+    - name: Analysing the code with pylint
+      run: |
+        pylint --errors-only $(find src/ -name "*.py" | xargs)
+    - name: Running tests
+      run: |
+        pytest --cov
+    - name: Archive production artifacts
+      if: ${{ matrix.python-version == '3.12' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: fritzbox-munin-plugins
+        path: src/fritzbox*.py

@@ -1,0 +1,251 @@
+{
+  "pid": "dslStat",
+  "hide": {
+    "mobile": true,
+    "liveTv": true,
+    "ssoSet": true,
+    "provServ": true,
+    "shareUsb": true,
+    "rrd": true
+  },
+  "timeTillLogout": "1192",
+  "time": [],
+  "data": {
+    "isConnected": true,
+    "negotiatedValues": [
+      {
+        "unit": "kbit\/s",
+        "title": "Leitungskapazität",
+        "val": [
+          {
+            "us": "47102",
+            "ds": "139083"
+          }
+        ]
+      },
+      {
+        "unit": "kbit\/s",
+        "title": "Aktuelle Datenrate",
+        "val": [
+          {
+            "us": "12736",
+            "ds": "63671"
+          }
+        ]
+      },
+      {
+        "unit": "kbit\/s",
+        "title": "Min Effektive Datenrate",
+        "val": [
+          {
+            "us": "12733",
+            "ds": "63632"
+          }
+        ]
+      },
+      {
+        "title": "Nahtlose Ratenadaption",
+        "val": [
+          {
+            "us": "aus",
+            "ds": "aus"
+          }
+        ]
+      },
+      {
+        "title": "Trägertausch (Bitswap)",
+        "val": [
+          {
+            "us": "an",
+            "ds": "aus"
+          }
+        ]
+      },
+      {
+        "title": ""
+      },
+      {
+        "unit": "ms",
+        "title": "Latenz",
+        "val": [
+          {
+            "us": "0",
+            "ds": "0"
+          }
+        ]
+      },
+      {
+        "title": "Impulsstörungsschutz (INP)",
+        "val": [
+          {
+            "us": "45.0",
+            "ds": "42.0"
+          }
+        ]
+      },
+      {
+        "title": "G.INP",
+        "val": [
+          {
+            "us": "an",
+            "ds": "an"
+          }
+        ]
+      },
+      {
+        "title": ""
+      },
+      {
+        "unit": "dB",
+        "title": "Störabstandsmarge",
+        "val": [
+          {
+            "us": "31",
+            "ds": "28"
+          }
+        ]
+      },
+      {
+        "unit": "dB",
+        "title": "Leitungsdämpfung",
+        "val": [
+          {
+            "us": "4",
+            "ds": "6"
+          }
+        ]
+      },
+      {
+        "unit": "m",
+        "title": "ungefähre Leitungslänge",
+        "val": [
+          "100"
+        ]
+      },
+      {
+        "title": ""
+      },
+      {
+        "title": "Profil",
+        "val": [
+          "17a"
+        ]
+      },
+      {
+        "title": "G.Vector",
+        "val": [
+          {
+            "us": "full",
+            "ds": "full"
+          }
+        ]
+      },
+      {
+        "title": ""
+      },
+      {
+        "title": "Trägersatz",
+        "val": [
+          "B43"
+        ]
+      }
+    ],
+    "errorCounters": [
+      {
+        "title": "Sekunden mit"
+      },
+      {
+        "title": "Fehlern (ES)",
+        "val": [
+          {
+            "us": "0",
+            "ds": "0"
+          }
+        ]
+      },
+      {
+        "title": "Fehlern (SES)",
+        "val": [
+          {
+            "us": "0",
+            "ds": "0"
+          }
+        ]
+      },
+      {
+        "title": ""
+      },
+      {
+        "title": "Nicht behebbare Fehler (CRC)"
+      },
+      {
+        "title": "pro Minute",
+        "val": [
+          {
+            "us": "0",
+            "ds": "0"
+          }
+        ]
+      },
+      {
+        "title": "letzte 15 Minuten",
+        "val": [
+          {
+            "us": "0",
+            "ds": "0"
+          }
+        ]
+      },
+      {
+        "title": ""
+      },
+      {
+        "title": "korrigierte DTU"
+      },
+      {
+        "title": "pro Minute",
+        "val": [
+          {
+            "us": "0",
+            "ds": "0"
+          }
+        ]
+      },
+      {
+        "title": "letzte 15 Minuten",
+        "val": [
+          {
+            "us": "0",
+            "ds": "0"
+          }
+        ]
+      },
+      {
+        "title": ""
+      },
+      {
+        "title": "unkorrigierte DTU"
+      },
+      {
+        "title": "pro Minute",
+        "val": [
+          {
+            "us": "0",
+            "ds": "0"
+          }
+        ]
+      },
+      {
+        "title": "letzte 15 Minuten",
+        "val": [
+          {
+            "us": "0",
+            "ds": "0"
+          }
+        ]
+      }
+    ],
+    "dataType": "dsl"
+  },
+  "sid": ""
+}

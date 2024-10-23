@@ -1,0 +1,86 @@
+{
+  "pid": "energy",
+  "hide": {
+    "mobile": true,
+    "liveTv": true,
+    "ssoSet": true,
+    "provServ": true,
+    "shareUsb": true,
+    "rrd": true
+  },
+  "timeTillLogout": "1200",
+  "time": [],
+  "data": {
+    "drain": [
+      {
+        "cumPerc": 23,
+        "actPerc": 24,
+        "name": "FRITZ!Box Gesamtsystem",
+        "statuses": "aktiv seit 66 Tagen, 6 Stunden, 6 Minuten"
+      },
+      {
+        "cumPerc": 68,
+        "actPerc": 67,
+        "name": "FRITZ!Box Hauptprozessor",
+        "statuses": ""
+      },
+      {
+        "cumPerc": 47,
+        "actPerc": 57,
+        "name": "WLAN",
+        "statuses": [
+          "WLAN aktiviert",
+          "55 WLAN-Netzwerkgeräte angemeldet"
+        ]
+      },
+      {
+        "cumPerc": 100,
+        "actPerc": 100,
+        "name": "DSL",
+        "statuses": [
+          "Internetverbindung hergestellt"
+        ]
+      },
+      {
+        "cumPerc": 0,
+        "actPerc": 0,
+        "name": "analoger FON-Anschluss",
+        "statuses": ""
+      },
+      {
+        "cumPerc": 0,
+        "actPerc": 0,
+        "name": "USB-Geräte",
+        "statuses": "kein USB-Gerät angeschlossen"
+      },
+      {
+        "statuses": "40 Geräte angeschlossen",
+        "name": "LAN-Anschlüsse",
+        "lan": [
+          {
+            "name": "LAN 1",
+            "class": "green"
+          },
+          {
+            "name": "LAN 2",
+            "class": "green"
+          },
+          {
+            "name": "LAN 3",
+            "class": "green"
+          },
+          {
+            "name": "LAN 4",
+            "class": "green"
+          }
+        ]
+      }
+    ],
+    "intro": {
+      "text": [
+        "Auf dieser Seite finden Sie Informationen zum Energieverbrauch der FRITZ!Box und zu belegten LAN-Schnittstellen."
+      ]
+    }
+  },
+  "sid": ""
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SessionInfo>
+    <SID>0000000000000999</SID>
+    <Challenge>secret</Challenge>
+    <BlockTime>0</BlockTime>
+    <Rights></Rights>
+    <Users>
+        <User>user-1</User>
+        <User last="1">user-2</User>
+        <User>user-3</User>
+    </Users>
+</SessionInfo>

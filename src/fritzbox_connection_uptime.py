@@ -18,25 +18,21 @@
   #%# capabilities=autoconf
 """
 
-import os
-import sys
 from fritzconnection.lib.fritzstatus import FritzStatus
-from FritzboxConfig import FritzboxConfig
+from fritzbox_config import FritzboxConfig
+from fritzbox_munin_plugin_interface import MuninPluginInterface,main_handler
 
-class FritzboxConnectionUptime:
+
+class FritzboxConnectionUptime(MuninPluginInterface):
   __connection = None
 
-  def __init__(self):
-    config = FritzboxConfig()
-    try:
-      self.__connection = FritzStatus(address=config.server, user=config.user, password=config.password, use_tls=config.useTls)
-    except Exception as e:
-      sys.exit("Couldn't get connection uptime: " + str(e))
+  def __init__(self, fritzstatus_connection: FritzStatus):
+    self.__connection = fritzstatus_connection
 
-  def printUptime(self):
-    print('uptime.value %.2f' % (int(self.__connection.uptime) / 3600.0))
+  def print_stats(self):
+    print(f"uptime.value {(int(self.__connection.connection_uptime) / 3600.0):.2f}")
 
-  def printConfig(self):
+  def print_config(self):
     print("graph_title Connection Uptime")
     print("graph_args --base 1000 -l 0")
     print("graph_vlabel uptime in hours")
@@ -46,14 +42,9 @@ class FritzboxConnectionUptime:
     print("uptime.draw AREA")
     print("graph_info The uptime in hours after the last disconnect.<br />Public IP address (ipv4): " + self.__connection.external_ip + ", Public IP address (ipv6): " + self.__connection.external_ipv6)
 
+
 if __name__ == "__main__":
-  uptime = FritzboxConnectionUptime()
-  if len(sys.argv) == 2 and sys.argv[1] == 'config':
-    uptime.printConfig()
-  elif len(sys.argv) == 2 and sys.argv[1] == 'autoconf':
-    print("yes")  # Some docs say it'll be called with fetch, some say no arg at all
-  elif len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] == 'fetch'):
-    try:
-      uptime.printUptime()
-    except Exception as e:
-      sys.exit("Couldn't retrieve fritzbox connection uptime: " + str(e))
+  config = FritzboxConfig()
+  uptime = FritzboxConnectionUptime(FritzStatus(address=config.server, user=config.user, password=config.password, use_tls=config.use_tls))
+
+  main_handler(uptime)

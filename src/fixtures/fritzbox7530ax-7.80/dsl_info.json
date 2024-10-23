@@ -1,0 +1,17 @@
+{
+  "NewEnable": true,
+  "NewStatus": "Up",
+  "NewDataPath": "Interleaved",
+  "NewUpstreamCurrRate": 12736,
+  "NewDownstreamCurrRate": 63671,
+  "NewUpstreamMaxRate": 47102,
+  "NewDownstreamMaxRate": 139083,
+  "NewUpstreamNoiseMargin": 310,
+  "NewDownstreamNoiseMargin": 280,
+  "NewUpstreamAttenuation": 40,
+  "NewDownstreamAttenuation": 60,
+  "NewATURVendor": "41564d00",
+  "NewATURCountry": "0400",
+  "NewUpstreamPower": 500,
+  "NewDownstreamPower": 500
+}

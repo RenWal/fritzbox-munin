@@ -19,82 +19,76 @@
   #%# capabilities=autoconf
 """
 
-import os
-import re
-import sys
-import json
-from FritzboxInterface import FritzboxInterface
+from statistics import mean
+from fritzconnection.lib.fritzstatus import FritzStatus
+from fritzbox_config import FritzboxConfig
+from fritzbox_munin_plugin_interface import MuninPluginInterface,main_handler,print_debug
 
-PAGE = 'data.lua'
-PARAMS = {'xhr':1, 'lang':'de', 'page':'netMoni', 'xhrId':'updateGraphs', 'useajax':1, 'no_sidrenew':None}
 
-DATA_UP   = ['us_realtime_bps_curr', 'us_important_bps_curr', 'us_default_bps_curr', 'us_background_bps_curr']
 LABELS_UP = ['realtime', 'high', 'default', 'low']
-DATA_DN   = ['ds_bps_curr', 'ds_mc_bps_curr']
 LABELS_DN = ['internet', 'iptv']
 
-def average_bps(datapoints):
-  avg = 0
-  for d in datapoints:
-    avg+=d
-  avg = avg//len(datapoints)
-  return avg
 
-def print_link_saturation():
-  """get the current DSL link saturation"""
+class FritzboxLinkSaturation(MuninPluginInterface):
+  __connection = None
 
-  jsondata = FritzboxInterface().postPageWithLogin(PAGE, data=PARAMS)["data"]["sync_groups"][0]
+  def __init__(self, fritzstatus_connection: FritzStatus):
+    self.__connection = fritzstatus_connection
 
-  maxup = int(jsondata['upstream'])
-  maxdown = int(jsondata['downstream'])
+  def print_stats(self):
+    group_data = self.__connection.get_monitor_data()
+    print_debug('got result from fritzbox:')
+    print_debug(group_data)
 
-  print("multigraph saturation_up")
-  for i in range(len(DATA_UP)):
-    print('up_' + LABELS_UP[i] + '.value ' + str(average_bps(jsondata[DATA_UP[i]])))
-  print("maxup.value " + str(maxup))
-  print("multigraph saturation_down")
-  for i in range(len(DATA_DN)):
-    print('dn_' + LABELS_DN[i] + '.value ' + str(average_bps(jsondata[DATA_DN[i]])))
-  print("maxdown.value " + str(maxdown))
+    maxup = group_data['Newmax_us']
+    maxdown = group_data['Newmax_ds']
 
-def print_config():
-  print("multigraph saturation_up")
-  print("graph_title Uplink saturation")
-  print("graph_vlabel bits out per ${graph_period}")
-  print("graph_category network")
-  print("graph_args --base 1000 --lower-limit 0")
-  print("graph_order " + ' '.join(LABELS_UP) + " maxdown")
-  for l in LABELS_UP:
-    print('up_' + l + '.label ' + l)
-    print('up_' + l + '.type GAUGE')
-    print('up_' + l + '.draw AREASTACK')
-    print('up_' + l + '.cdef up_' + l + ',8,*')
-  print("maxup.label MAX")
-  print("maxup.type GAUGE")
-  print("maxup.graph LINE1")
+    print("multigraph saturation_up")
+    for i, value in enumerate(['Newprio_realtime_bps', 'Newprio_high_bps', 'Newprio_default_bps', 'Newprio_low_bps']):
+      if value in group_data:
+        print('up_' + LABELS_UP[i] + '.value ' + str(mean(group_data[value])))
+    print("maxup.value " + str(maxup))
 
-  print("multigraph saturation_down")
-  print("graph_title Downlink saturation")
-  print("graph_vlabel bits in per ${graph_period}")
-  print("graph_category network")
-  print("graph_args --base 1000 --lower-limit 0")
-  print("graph_order " + ' '.join(LABELS_DN) + " maxup")
-  for l in LABELS_DN:
-    print('dn_' + l + '.label ' + l)
-    print('dn_' + l + '.type GAUGE')
-    print('dn_' + l + '.draw AREASTACK')
-    print('dn_' + l + '.cdef dn_' + l + ',8,*')
-  print("maxdown.label MAX")
-  print("maxdown.type GAUGE")
-  print("maxdown.graph LINE1")
+    print("multigraph saturation_down")
+    for i, value in enumerate(['Newds_current_bps', 'Newmc_current_bps']):
+      if value in group_data:
+        print('dn_' + LABELS_DN[i] + '.value ' + str(mean(group_data[value])))
+    print("maxdown.value " + str(maxdown))
+
+  def print_config(self):
+    print("multigraph saturation_up")
+    print("graph_title Uplink saturation")
+    print("graph_vlabel bits out per ${graph_period}")
+    print("graph_category network")
+    print("graph_args --base 1000 --lower-limit 0")
+    print("graph_order " + ' '.join(LABELS_UP) + " maxdown")
+    for label in LABELS_UP:
+      print('up_' + label + '.label ' + label)
+      print('up_' + label + '.type GAUGE')
+      print('up_' + label + '.draw AREASTACK')
+      print('up_' + label + '.cdef up_' + label + ',8,*')
+    print("maxup.label MAX")
+    print("maxup.type GAUGE")
+    print("maxup.graph LINE1")
+    print('maxup.cdef maxup,8,*')
+
+    print("multigraph saturation_down")
+    print("graph_title Downlink saturation")
+    print("graph_vlabel bits in per ${graph_period}")
+    print("graph_category network")
+    print("graph_args --base 1000 --lower-limit 0")
+    print("graph_order " + ' '.join(LABELS_DN) + " maxup")
+    for label in LABELS_DN:
+      print('dn_' + label + '.label ' + label)
+      print('dn_' + label + '.type GAUGE')
+      print('dn_' + label + '.draw AREASTACK')
+      print('dn_' + label + '.cdef dn_' + label + ',8,*')
+    print("maxdown.label MAX")
+    print("maxdown.type GAUGE")
+    print("maxdown.graph LINE1")
+    print('maxdown.cdef maxdown,8,*')
+
 
 if __name__ == "__main__":
-  if len(sys.argv) == 2 and sys.argv[1] == 'config':
-    print_config()
-  elif len(sys.argv) == 2 and sys.argv[1] == 'autoconf':
-    print("yes")  # Some docs say it'll be called with fetch, some say no arg at all
-  elif len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] == 'fetch'):
-    try:
-      print_link_saturation()
-    except Exception as e:
-      sys.exit("Couldn't retrieve fritzbox link saturation: " + str(e))
+  config = FritzboxConfig()
+  main_handler(FritzboxLinkSaturation(FritzStatus(address=config.server, user=config.user, password=config.password, use_tls=config.use_tls)))
